@@ -1,0 +1,7 @@
+services:
+  jobspy:
+    image: ghcr.io/spicylimes/jobspy:latest
+    container_name: jobspy
+    ports:
+      - "7860:7860"
+    restart: unless-stopped
