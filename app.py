@@ -8,9 +8,9 @@ from jobspy import scrape_jobs
 from jobspy.model import Country
 
 
-SITE_CHOICES = ["linkedin", "indeed", "zip_recruiter", "glassdoor", "google", "bayt", "naukri", "bdjobs"]
+SITE_CHOICES = ["LinkedIn", "Indeed", "Zip-Recruiter", "Glassdoor", "Google", "Bayt", "Naukri", "BDJobs"]
 
-JOB_TYPE_CHOICES = ["", "fulltime", "parttime", "contract", "internship", "temporary"]
+JOB_TYPE_CHOICES = ["", "Fulltime", "PartTime", "Contract", "Internship", "Temporary"]
 
 COUNTRY_CHOICES = sorted(
     [c.value[0].split(",")[0].title() for c in Country
@@ -33,9 +33,9 @@ def run_scrape(
     enforce_annual_salary: bool,
 ):
     if not sites:
-        return None, "Select at least one job site."
+        return None, "Select at least one Job Site"
     if not search_term.strip():
-        return None, "Enter a search term."
+        return None, "Enter a Search Query"
 
     try:
         df = scrape_jobs(
@@ -57,12 +57,12 @@ def run_scrape(
         return None, f"Error: {e}"
 
     if df.empty:
-        return None, "No jobs found. Try broadening your search."
+        return None, "No Jobs Found - Use a Broader Search Query"
 
     display_cols = [
-        "site", "title", "company", "location", "date_posted",
-        "job_type", "interval", "min_amount", "max_amount", "currency",
-        "is_remote", "job_url",
+        "Site", "Title", "Company", "Location", "Date-Posted",
+        "Job-Type", "Interval", "Min-Amount", "Max-Amount", "Currency",
+        "Is-Remote", "Job-URL",
     ]
     display_cols = [c for c in display_cols if c in df.columns]
 
@@ -78,43 +78,43 @@ def export_csv(df_state):
     return gr.File.update(value=buf, visible=True) if hasattr(gr.File, "update") else buf
 
 
-with gr.Blocks(title="JobSpy — Job Search Aggregator", theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# JobSpy — Job Search Aggregator")
+with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=gr.Theme.from_hub("d8ahazard/rd_blue")) as demo:
+    gr.Markdown("# JobSpy Docker — Job Search Aggregator")
     gr.Markdown(
-        "Search across LinkedIn, Indeed, ZipRecruiter, Glassdoor, Google Jobs, and more — all at once."
+        "Search across LinkedIn, Indeed, ZipRecruiter, Glassdoor, Google Jobs, and more — all at once!"
     )
 
     df_state = gr.State(None)
 
     with gr.Row():
         with gr.Column(scale=2):
-            search_term = gr.Textbox(label="Search Term", placeholder="e.g. software engineer")
+            search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer")
             location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
 
         with gr.Column(scale=1):
             sites = gr.CheckboxGroup(
                 choices=SITE_CHOICES,
-                value=["indeed", "linkedin", "google"],
+                value=["Indeed", "LinkedIn", "Glassdoor", "Zip-Recruiter"],
                 label="Job Sites",
             )
 
     with gr.Row():
-        results_wanted = gr.Slider(5, 100, value=20, step=5, label="Results per site")
-        distance = gr.Slider(0, 100, value=50, step=5, label="Distance (miles)")
-        hours_old = gr.Number(label="Posted within (hours)", value=None, minimum=1, precision=0)
+        results_wanted = gr.Slider(5, 100, value=20, step=5, label="Jobs per Site")
+        distance = gr.Slider(0, 100, value=50, step=5, label="Distance (Miles)")
+        hours_old = gr.Number(label="Posted within... (Hours)", value=None, minimum=1, precision=0)
 
     with gr.Row():
         country_indeed = gr.Dropdown(
             choices=COUNTRY_CHOICES,
-            value="Usa",
+            value="USA",
             label="Country (Indeed & Glassdoor)",
         )
         job_type = gr.Dropdown(choices=JOB_TYPE_CHOICES, value="", label="Job Type")
 
     with gr.Row():
-        is_remote = gr.Checkbox(label="Remote only")
-        easy_apply = gr.Checkbox(label="Easy Apply only (LinkedIn/Indeed)")
-        enforce_annual_salary = gr.Checkbox(label="Convert salary to annual")
+        is_remote = gr.Checkbox(label="Remote Only")
+        easy_apply = gr.Checkbox(label="Easy Apply Only (LinkedIn & Indeed)")
+        enforce_annual_salary = gr.Checkbox(label="Convert Salary to Annual")
 
     search_btn = gr.Button("Search Jobs", variant="primary")
     status_msg = gr.Markdown("")
