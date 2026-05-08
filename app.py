@@ -8,9 +8,11 @@ from jobspy import scrape_jobs
 from jobspy.model import Country
 
 
-SITE_CHOICES = ["LinkedIn", "Indeed", "Zip-Recruiter", "Glassdoor", "Google", "Bayt", "Naukri", "BDJobs"]
+SITE_CHOICES = ["linkedin", "indeed", "zip_recruiter", "glassdoor", "google", "bayt", "naukri", "bdjobs"]
+SITE_LABELS = {"linkedin": "LinkedIn", "indeed": "Indeed", "zip_recruiter": "Zip Recruiter", "glassdoor": "Glassdoor", "google": "Google", "bayt": "Bayt", "naukri": "Naukri", "bdjobs": "BDJobs"}
 
-JOB_TYPE_CHOICES = ["", "Fulltime", "PartTime", "Contract", "Internship", "Temporary"]
+JOB_TYPE_CHOICES = ["", "fulltime", "parttime", "contract", "internship", "temporary"]
+JOB_TYPE_LABELS = {"": "", "fulltime": "Full Time", "parttime": "Part Time", "contract": "Contract", "internship": "Internship", "temporary": "Temporary"}
 
 COUNTRY_CHOICES = sorted(
     [c.value[0].split(",")[0].title() for c in Country
@@ -60,9 +62,9 @@ def run_scrape(
         return None, "No Jobs Found - Use a Broader Search Query"
 
     display_cols = [
-        "Site", "Title", "Company", "Location", "Date-Posted",
-        "Job-Type", "Interval", "Min-Amount", "Max-Amount", "Currency",
-        "Is-Remote", "Job-URL",
+        "site", "title", "company", "location", "date_posted",
+        "job_type", "interval", "min_amount", "max_amount", "currency",
+        "is_remote", "job_url",
     ]
     display_cols = [c for c in display_cols if c in df.columns]
 
@@ -93,8 +95,8 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=gr.Theme.f
 
         with gr.Column(scale=1):
             sites = gr.CheckboxGroup(
-                choices=SITE_CHOICES,
-                value=["Indeed", "LinkedIn", "Glassdoor", "Zip-Recruiter"],
+                choices=[(SITE_LABELS[s], s) for s in SITE_CHOICES],
+                value=["indeed", "linkedin", "glassdoor", "zip_recruiter"],
                 label="Job Sites",
             )
 
@@ -106,10 +108,10 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=gr.Theme.f
     with gr.Row():
         country_indeed = gr.Dropdown(
             choices=COUNTRY_CHOICES,
-            value="USA",
+            value="Usa",
             label="Country (Indeed & Glassdoor)",
         )
-        job_type = gr.Dropdown(choices=JOB_TYPE_CHOICES, value="", label="Job Type")
+        job_type = gr.Dropdown(choices=[(JOB_TYPE_LABELS[t], t) for t in JOB_TYPE_CHOICES], value="", label="Job Type")
 
     with gr.Row():
         is_remote = gr.Checkbox(label="Remote Only")
