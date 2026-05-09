@@ -1,10 +1,10 @@
 # JobSpy Docker
 
-A self-hosted Gradio web UI for [JobSpy](https://github.com/cullenwatson/JobSpy), packaged as a Docker container. Search across LinkedIn, Indeed, ZipRecruiter, Glassdoor, Google Jobs, Bayt, Naukri, and BDJobs from a single interface.
+A self-hosted Gradio web UI for [JobSpy](https://github.com/speedyapply/JobSpy), packaged as a Docker container. Search across LinkedIn and Indeed simultaneously — filter, compare, and export results in one place.
 
 ## Features
 
-- Search multiple job boards simultaneously
+- Search LinkedIn and Indeed simultaneously
 - Filter by job type, location, country, remote status, salary, and recency
 - Export results to CSV
 - Runs entirely locally — no external accounts or API keys required
@@ -39,18 +39,17 @@ docker run -p 7860:7860 jobspy
 ## Usage
 
 1. Enter a search term and optional location
-2. Select one or more job sites to search
+2. Select one or both job sites (LinkedIn, Indeed)
 3. Adjust filters (job type, remote, salary, recency, etc.)
 4. Click **Search Jobs**
 5. Optionally export results with **Export to CSV**
 
 ## Notes
 
-- LinkedIn rate-limits aggressively — use proxies if scraping at scale.
+- LinkedIn rate-limits aggressively — results may be sparse without proxies.
 - Indeed is generally the most reliable source with the fewest restrictions.
-- All job board endpoints cap results at roughly 1,000 jobs per search.
 - Scraping is subject to each site's terms of service.
 
 ## License
 
-MIT — based on [JobSpy](https://github.com/cullenwatson/JobSpy) by Cullen Watson.
+MIT — based on [JobSpy](https://github.com/speedyapply/JobSpy) by SpeedyApply.

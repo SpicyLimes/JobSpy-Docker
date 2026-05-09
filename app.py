@@ -21,6 +21,15 @@ COUNTRY_CHOICES = sorted(
     key=str.lower
 )
 
+HEADER_HTML = """
+<div style="display:flex; align-items:center; gap:16px; padding:8px 0 4px;">
+    <img src="/gradio_api/file=/app/Logo.png" style="height:60px; width:auto;">
+    <span style="font-size:1rem; opacity:0.7; line-height:1.4;">
+        Search LinkedIn &amp; Indeed simultaneously —<br>filter, compare, and export results in one place.
+    </span>
+</div>
+"""
+
 
 def run_scrape(
     sites: list[str],
@@ -72,29 +81,17 @@ def run_scrape(
     return df[display_cols], f"{len(df)} jobs found across {len(sites)} site(s)."
 
 
-def export_csv(df_state):
-    if df_state is None or (isinstance(df_state, pd.DataFrame) and df_state.empty):
-        return None
-    buf = io.BytesIO()
-    df_state.to_csv(buf, index=False)
-    buf.seek(0)
-    return gr.File.update(value=buf, visible=True) if hasattr(gr.File, "update") else buf
-
-
 with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as demo:
-    gr.Markdown("# JobSpy Docker — Job Search Aggregator")
-    gr.Markdown(
-        "Search across LinkedIn, Indeed, ZipRecruiter, Glassdoor, Google Jobs, and more — all at once!"
-    )
+    gr.HTML(HEADER_HTML)
 
     df_state = gr.State(None)
 
     with gr.Row():
-        with gr.Column(scale=2):
+        with gr.Column(scale=3):
             search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer")
+        with gr.Column(scale=3):
             location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
-
-        with gr.Column(scale=1):
+        with gr.Column(scale=1, min_width=160):
             sites = gr.CheckboxGroup(
                 choices=[(SITE_LABELS[s], s) for s in SITE_CHOICES],
                 value=["indeed", "linkedin"],
@@ -102,24 +99,27 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
             )
 
     with gr.Row():
-        results_wanted = gr.Slider(5, 100, value=20, step=5, label="Jobs per Site")
-        distance = gr.Slider(0, 100, value=50, step=5, label="Distance (Miles)")
-        hours_old = gr.Number(label="Posted within... (Hours)", value=None, minimum=1, precision=0)
-
-    with gr.Row():
-        country_indeed = gr.Dropdown(
-            choices=COUNTRY_CHOICES,
-            value="Usa",
-            label="Country (Indeed & Glassdoor)",
-        )
-        job_type = gr.Dropdown(choices=[(JOB_TYPE_LABELS[t], t) for t in JOB_TYPE_CHOICES], value="", label="Job Type")
+        with gr.Column(scale=2):
+            country_indeed = gr.Dropdown(
+                choices=COUNTRY_CHOICES,
+                value="Usa",
+                label="Country (Indeed)",
+            )
+        with gr.Column(scale=2):
+            job_type = gr.Dropdown(choices=[(JOB_TYPE_LABELS[t], t) for t in JOB_TYPE_CHOICES], value="", label="Job Type")
+        with gr.Column(scale=3):
+            results_wanted = gr.Slider(5, 100, value=20, step=5, label="Jobs per Site")
+        with gr.Column(scale=3):
+            distance = gr.Slider(0, 100, value=50, step=5, label="Distance (Miles)")
+        with gr.Column(scale=2):
+            hours_old = gr.Number(label="Posted Within (Hours)", value=None, minimum=1, precision=0)
 
     with gr.Row():
         is_remote = gr.Checkbox(label="Remote Only")
         easy_apply = gr.Checkbox(label="Easy Apply Only (LinkedIn & Indeed)")
         enforce_annual_salary = gr.Checkbox(label="Convert Salary to Annual")
+        search_btn = gr.Button("Search Jobs", variant="primary")
 
-    search_btn = gr.Button("Search Jobs", variant="primary")
     status_msg = gr.Markdown("")
 
     results_table = gr.Dataframe(
@@ -166,4 +166,4 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
     )
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860)
+    demo.launch(server_name="0.0.0.0", server_port=7860, allowed_paths=["/app/Logo.png"])
