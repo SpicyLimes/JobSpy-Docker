@@ -9,8 +9,8 @@ from jobspy.model import Country
 from theme import theme
 
 
-SITE_CHOICES = ["linkedin", "indeed", "zip_recruiter", "glassdoor", "google", "bayt", "naukri", "bdjobs"]
-SITE_LABELS = {"linkedin": "LinkedIn", "indeed": "Indeed", "zip_recruiter": "Zip Recruiter", "glassdoor": "Glassdoor", "google": "Google", "bayt": "Bayt", "naukri": "Naukri", "bdjobs": "BDJobs"}
+SITE_CHOICES = ["linkedin", "indeed"]
+SITE_LABELS = {"linkedin": "LinkedIn", "indeed": "Indeed"}
 
 JOB_TYPE_CHOICES = ["", "fulltime", "parttime", "contract", "internship", "temporary"]
 JOB_TYPE_LABELS = {"": "", "fulltime": "Full Time", "parttime": "Part Time", "contract": "Contract", "internship": "Internship", "temporary": "Temporary"}
@@ -97,7 +97,7 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
         with gr.Column(scale=1):
             sites = gr.CheckboxGroup(
                 choices=[(SITE_LABELS[s], s) for s in SITE_CHOICES],
-                value=["indeed", "linkedin", "glassdoor", "zip_recruiter"],
+                value=["indeed", "linkedin"],
                 label="Job Sites",
             )
 
@@ -160,8 +160,8 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
 
     gr.Markdown(
         "---\n"
-        "[GitHub](https://github.com/SpicyLimes/JobSpy-Docker) | Dockerize with Claude Code | Based on [JobSpy](https://github.com/speedyapply/JobSpy) by [SpeedyApply](https://www.speedyapply.com)"
-        "---\n"
+        "[GitHub](https://github.com/SpicyLimes/JobSpy-Docker) · Dockerized with Claude Code · "
+        "Based on [JobSpy](https://github.com/speedyapply/JobSpy) by [SpeedyApply](https://www.speedyapply.com)\n\n"
         "Scraping is subject to each site's rate limits — if results are sparse, try fewer sites or add a delay between searches."
     )
 
