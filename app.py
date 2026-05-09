@@ -85,18 +85,16 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
     # ── Row 1: Search Query (+ site checkboxes) | Location (+ remote) ──
     with gr.Row():
         with gr.Column(scale=1):
-            with gr.Group():
-                search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer", container=False)
-                sites = gr.CheckboxGroup(
-                    choices=[(SITE_LABELS[s], s) for s in SITE_CHOICES],
-                    value=["indeed", "linkedin"],
-                    label="",
-                    container=False,
-                )
+            search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer")
+            sites = gr.CheckboxGroup(
+                choices=[(SITE_LABELS[s], s) for s in SITE_CHOICES],
+                value=["indeed", "linkedin"],
+                label="",
+                container=False,
+            )
         with gr.Column(scale=1):
-            with gr.Group():
-                location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)", container=False)
-                is_remote = gr.Checkbox(label="Remote Only", container=False)
+            location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
+            is_remote = gr.Checkbox(label="Remote Only")
 
     # ── Row 2: Job Type | Posted Within | Jobs per Site | Distance ───
     with gr.Row(equal_height=True):
