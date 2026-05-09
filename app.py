@@ -6,6 +6,7 @@ import pandas as pd
 
 from jobspy import scrape_jobs
 from jobspy.model import Country
+from theme import theme
 
 
 SITE_CHOICES = ["linkedin", "indeed", "zip_recruiter", "glassdoor", "google", "bayt", "naukri", "bdjobs"]
@@ -80,7 +81,7 @@ def export_csv(df_state):
     return gr.File.update(value=buf, visible=True) if hasattr(gr.File, "update") else buf
 
 
-with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=gr.Theme.from_hub("d8ahazard/rd_blue")) as demo:
+with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as demo:
     gr.Markdown("# JobSpy Docker — Job Search Aggregator")
     gr.Markdown(
         "Search across LinkedIn, Indeed, ZipRecruiter, Glassdoor, Google Jobs, and more — all at once!"
@@ -159,7 +160,8 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=gr.Theme.f
 
     gr.Markdown(
         "---\n"
-        "Built on [JobSpy](https://github.com/cullenwatson/JobSpy). "
+        "[GitHub](https://github.com/SpicyLimes/JobSpy-Docker) | Dockerize with Claude Code | Based on [JobSpy](https://github.com/speedyapply/JobSpy) by [SpeedyApply](https://www.speedyapply.com)"
+        "---\n"
         "Scraping is subject to each site's rate limits — if results are sparse, try fewer sites or add a delay between searches."
     )
 
