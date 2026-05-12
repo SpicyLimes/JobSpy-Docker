@@ -8,8 +8,6 @@ from jobspy import scrape_jobs
 from theme import theme
 
 
-SITE_CHOICES = ["linkedin", "indeed"]
-SITE_LABELS = {"linkedin": "LinkedIn", "indeed": "Indeed"}
 
 JOB_TYPE_CHOICES = ["", "fulltime", "parttime", "contract", "internship", "temporary"]
 JOB_TYPE_LABELS = {"": "Any", "fulltime": "Full Time", "parttime": "Part Time", "contract": "Contract", "internship": "Internship", "temporary": "Temporary"}
@@ -86,12 +84,9 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
     with gr.Row():
         with gr.Column(scale=1):
             search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer")
-            sites = gr.CheckboxGroup(
-                choices=[(SITE_LABELS[s], s) for s in SITE_CHOICES],
-                value=["indeed", "linkedin"],
-                label=None,
-                container=False,
-            )
+            with gr.Row():
+                site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
+                site_indeed = gr.Checkbox(label="Indeed", value=True)
         with gr.Column(scale=1):
             location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
             is_remote = gr.Checkbox(label="Remote Only")
@@ -122,14 +117,16 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
 
     csv_file = gr.File(label="Download CSV", visible=False)
 
-    def on_search(*args):
-        df, msg = run_scrape(*args)
+    def on_search(use_linkedin, use_indeed, search_term, location,
+                  results_wanted, hours_old, is_remote, job_type, distance):
+        sites = [s for s, on in [("linkedin", use_linkedin), ("indeed", use_indeed)] if on]
+        df, msg = run_scrape(sites, search_term, location, results_wanted, hours_old, is_remote, job_type, distance)
         return df, df, msg
 
     search_btn.click(
         fn=on_search,
         inputs=[
-            sites, search_term, location,
+            site_linkedin, site_indeed, search_term, location,
             results_wanted, hours_old, is_remote, job_type, distance,
         ],
         outputs=[results_table, df_state, status_msg],
