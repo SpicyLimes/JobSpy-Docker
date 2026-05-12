@@ -77,9 +77,9 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
     with gr.Row(equal_height=True):
         with gr.Column(scale=6):
             gr.HTML(HEADER_HTML)
-        with gr.Column(scale=1, min_width=140, max_height=60):
+        with gr.Column(scale=1, min_width=140):
             search_btn = gr.Button("Search Jobs", variant="primary")
-        with gr.Column(scale=1, min_width=140, max_height=60):
+        with gr.Column(scale=1, min_width=140):
             export_btn = gr.Button("Export to CSV")
 
     # ── Row 1: Search Query (+ site checkboxes) | Location (+ remote) ──
