@@ -84,9 +84,8 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
     with gr.Row():
         with gr.Column(scale=1):
             search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer")
-            with gr.Row():
-                site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
-                site_indeed = gr.Checkbox(label="Indeed", value=True)
+            site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
+            site_indeed = gr.Checkbox(label="Indeed", value=True)
         with gr.Column(scale=1):
             location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
             is_remote = gr.Checkbox(label="Remote Only")
