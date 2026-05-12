@@ -89,7 +89,8 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
             sites = gr.CheckboxGroup(
                 choices=[(SITE_LABELS[s], s) for s in SITE_CHOICES],
                 value=["indeed", "linkedin"],
-                label="",
+                label=None,
+                container=False,
             )
         with gr.Column(scale=1):
             location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
