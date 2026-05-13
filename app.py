@@ -14,8 +14,7 @@ JOB_TYPE_LABELS = {"": "Any", "fulltime": "Full Time", "parttime": "Part Time", 
 
 HEADER_HTML = """
 <style>
-#search-btn, #export-btn { height: 60px; }
-.site-checks { flex-direction: row !important; gap: 16px; }
+.site-checks > .wrap { flex-direction: row !important; flex-wrap: wrap; gap: 8px; }
 </style>
 <div style="display:flex; align-items:center; gap:16px; padding:8px 0 4px;">
     <img src="/gradio_api/file=/app/Logo.png" style="height:60px; width:auto;">
@@ -80,17 +79,16 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
         with gr.Column(scale=6):
             gr.HTML(HEADER_HTML)
         with gr.Column(scale=1, min_width=140):
-            search_btn = gr.Button("Search Jobs", variant="primary", elem_id="search-btn")
+            search_btn = gr.Button("Search Jobs", variant="primary")
         with gr.Column(scale=1, min_width=140):
-            export_btn = gr.Button("Export to CSV", elem_id="export-btn")
+            export_btn = gr.Button("Export to CSV")
 
     # ── Row 1: Search Query (+ site checkboxes) | Location (+ remote) ──
     with gr.Row():
-        with gr.Column(scale=1):
+        with gr.Column(scale=1, elem_classes=["site-checks"]):
             search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer")
-            with gr.Group(elem_classes=["site-checks"]):
-                site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
-                site_indeed = gr.Checkbox(label="Indeed", value=True)
+            site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
+            site_indeed = gr.Checkbox(label="Indeed", value=True)
         with gr.Column(scale=1):
             location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
             is_remote = gr.Checkbox(label="Remote Only")
