@@ -13,6 +13,9 @@ JOB_TYPE_CHOICES = ["", "fulltime", "parttime", "contract", "internship", "tempo
 JOB_TYPE_LABELS = {"": "Any", "fulltime": "Full Time", "parttime": "Part Time", "contract": "Contract", "internship": "Internship", "temporary": "Temporary"}
 
 HEADER_HTML = """
+<style>
+.site-checks > .wrap { flex-direction: row !important; flex-wrap: wrap; gap: 8px; }
+</style>
 <div style="display:flex; align-items:center; gap:16px; padding:8px 0 4px;">
     <img src="/gradio_api/file=/app/Logo.png" style="height:60px; width:auto;">
     <span style="font-size:1rem; opacity:0.7; line-height:1.4;">
@@ -80,15 +83,15 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
         with gr.Column(scale=1, min_width=140):
             export_btn = gr.Button("Export to CSV")
 
-    # ── Row 1: Search Query | Location (+ remote) ───────────────────────
+    # ── Row 1: Search Query (+ site checkboxes) | Location (+ remote) ──
     with gr.Row():
-        with gr.Column(scale=1):
+        with gr.Column(scale=1, elem_classes=["site-checks"]):
             search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer")
+            site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
+            site_indeed = gr.Checkbox(label="Indeed", value=True)
         with gr.Column(scale=1):
-            with gr.Row(equal_height=True):
-                gr.HTML('<span style="font-weight:600; font-size:0.875rem;">Location</span>')
-                is_remote = gr.Checkbox(label="Remote Only", container=False)
-            location = gr.Textbox(placeholder="e.g. San Francisco, CA (leave blank for remote/global)", container=False)
+            location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
+            is_remote = gr.Checkbox(label="Remote Only")
 
     # ── Row 2: Job Type | Posted Within | Jobs per Site | Distance ───
     with gr.Row(equal_height=True):
@@ -116,13 +119,18 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
 
     csv_file = gr.File(label="Download CSV", visible=False)
 
-    def on_search(search_term, location, results_wanted, hours_old, is_remote, job_type, distance):
-        df, msg = run_scrape(["linkedin", "indeed"], search_term, location, results_wanted, hours_old, is_remote, job_type, distance)
+    def on_search(use_linkedin, use_indeed, search_term, location,
+                  results_wanted, hours_old, is_remote, job_type, distance):
+        sites = [s for s, on in [("linkedin", use_linkedin), ("indeed", use_indeed)] if on]
+        df, msg = run_scrape(sites, search_term, location, results_wanted, hours_old, is_remote, job_type, distance)
         return df, df, msg
 
     search_btn.click(
         fn=on_search,
-        inputs=[search_term, location, results_wanted, hours_old, is_remote, job_type, distance],
+        inputs=[
+            site_linkedin, site_indeed, search_term, location,
+            results_wanted, hours_old, is_remote, job_type, distance,
+        ],
         outputs=[results_table, df_state, status_msg],
     )
 
