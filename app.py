@@ -71,21 +71,24 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
 
     df_state = gr.State(None)
 
+    gr.HTML("<style>#search-btn, #export-btn { height: 60px; }</style>")
+
     # ── Header: logo + subtitle left, action buttons right ───────────
     with gr.Row(equal_height=True):
         with gr.Column(scale=6):
             gr.HTML(HEADER_HTML)
         with gr.Column(scale=1, min_width=140):
-            search_btn = gr.Button("Search Jobs", variant="primary")
+            search_btn = gr.Button("Search Jobs", variant="primary", elem_id="search-btn")
         with gr.Column(scale=1, min_width=140):
-            export_btn = gr.Button("Export to CSV")
+            export_btn = gr.Button("Export to CSV", elem_id="export-btn")
 
     # ── Row 1: Search Query (+ site checkboxes) | Location (+ remote) ──
     with gr.Row():
         with gr.Column(scale=1):
             search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer")
-            site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
-            site_indeed = gr.Checkbox(label="Indeed", value=True)
+            with gr.Row(elem_classes=["site-checks"]):
+                site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
+                site_indeed = gr.Checkbox(label="Indeed", value=True)
         with gr.Column(scale=1):
             location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
             is_remote = gr.Checkbox(label="Remote Only")
