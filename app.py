@@ -31,7 +31,6 @@ def run_scrape(
     location: str,
     results_wanted: int,
     hours_old: int | None,
-    is_remote: bool,
     job_type: str,
     distance: int,
 ):
@@ -40,15 +39,16 @@ def run_scrape(
     if not search_term.strip():
         return None, "Enter a Search Query"
 
+    location_clean = location.strip()
     try:
         df = scrape_jobs(
             site_name=sites,
             search_term=search_term.strip(),
-            location=location.strip() or None,
+            location=location_clean or None,
             country_indeed="usa",
             results_wanted=int(results_wanted),
             hours_old=int(hours_old) * 24 if hours_old else None,
-            is_remote=is_remote,
+            is_remote=not bool(location_clean),
             job_type=job_type or None,
             distance=int(distance),
             description_format="markdown",
@@ -90,8 +90,7 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
             site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
             site_indeed = gr.Checkbox(label="Indeed", value=True)
         with gr.Column(scale=1):
-            location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote/global)")
-            is_remote = gr.Checkbox(label="Remote Only")
+            location = gr.Textbox(label="Location", placeholder="e.g. San Francisco, CA (leave blank for remote)")
 
     # ── Row 2: Job Type | Posted Within | Jobs per Site | Distance ───
     with gr.Row(equal_height=True):
@@ -120,16 +119,16 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
     csv_file = gr.File(label="Download CSV", visible=False)
 
     def on_search(use_linkedin, use_indeed, search_term, location,
-                  results_wanted, hours_old, is_remote, job_type, distance):
+                  results_wanted, hours_old, job_type, distance):
         sites = [s for s, on in [("linkedin", use_linkedin), ("indeed", use_indeed)] if on]
-        df, msg = run_scrape(sites, search_term, location, results_wanted, hours_old, is_remote, job_type, distance)
+        df, msg = run_scrape(sites, search_term, location, results_wanted, hours_old, job_type, distance)
         return df, df, msg
 
     search_btn.click(
         fn=on_search,
         inputs=[
             site_linkedin, site_indeed, search_term, location,
-            results_wanted, hours_old, is_remote, job_type, distance,
+            results_wanted, hours_old, job_type, distance,
         ],
         outputs=[results_table, df_state, status_msg],
     )
