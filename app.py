@@ -13,6 +13,10 @@ JOB_TYPE_CHOICES = ["", "fulltime", "parttime", "contract", "internship", "tempo
 JOB_TYPE_LABELS = {"": "Any", "fulltime": "Full Time", "parttime": "Part Time", "contract": "Contract", "internship": "Internship", "temporary": "Temporary"}
 
 HEADER_HTML = """
+<style>
+#search-btn, #export-btn { height: 60px; }
+.site-checks { flex-direction: row !important; gap: 16px; }
+</style>
 <div style="display:flex; align-items:center; gap:16px; padding:8px 0 4px;">
     <img src="/gradio_api/file=/app/Logo.png" style="height:60px; width:auto;">
     <span style="font-size:1rem; opacity:0.7; line-height:1.4;">
@@ -71,8 +75,6 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
 
     df_state = gr.State(None)
 
-    gr.HTML("<style>#search-btn, #export-btn { height: 60px; }</style>")
-
     # ── Header: logo + subtitle left, action buttons right ───────────
     with gr.Row(equal_height=True):
         with gr.Column(scale=6):
@@ -86,7 +88,7 @@ with gr.Blocks(title="JobSpy Docker — Job Search Aggregator", theme=theme) as 
     with gr.Row():
         with gr.Column(scale=1):
             search_term = gr.Textbox(label="Search Query", placeholder="e.g. Software Engineer")
-            with gr.Row(elem_classes=["site-checks"]):
+            with gr.Group(elem_classes=["site-checks"]):
                 site_linkedin = gr.Checkbox(label="LinkedIn", value=True)
                 site_indeed = gr.Checkbox(label="Indeed", value=True)
         with gr.Column(scale=1):
